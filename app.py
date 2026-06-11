@@ -6,53 +6,169 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("🌱 AgriDetect")
-st.subheader("Deteksi Penyakit Tanaman Selada")
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(90deg, #a8d66d, #ffffff);
+}
+.main-title {
+    text-align: center;
+    color: #005500;
+    font-size: 42px;
+    font-weight: bold;
+}
+.sub-title {
+    text-align: center;
+    color: #005500;
+    font-size: 20px;
+    font-weight: bold;
+}
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #006400;
+    margin-bottom: 15px;
+}
+.result-card {
+    background-color: #eaffea;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #008000;
+    margin-top: 15px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-st.write("Pilih gejala yang sesuai dengan kondisi tanaman.")
+st.markdown('<div class="main-title">🌱 AgriDetect</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Deteksi Penyakit Pada Tanaman Selada</div>', unsafe_allow_html=True)
 
-gejala = []
+st.write("")
+st.info("Pilih gejala tanaman, lalu tekan tombol **PROSES DETEKSI**.")
 
-if st.checkbox("Daun menguning"):
-    gejala.append("daun menguning")
+gejala_terpilih = []
 
-if st.checkbox("Daun menghitam"):
-    gejala.append("daun menghitam")
+with st.container():
+    st.subheader("Perubahan Warna Daun")
+    if st.checkbox("Tidak ada perubahan warna"):
+        gejala_terpilih.append("tidak ada perubahan warna")
+    if st.checkbox("Daun menguning"):
+        gejala_terpilih.append("daun menguning")
+    if st.checkbox("Daun menghitam"):
+        gejala_terpilih.append("daun menghitam")
+    if st.checkbox("Daun mengering"):
+        gejala_terpilih.append("daun mengering")
 
-if st.checkbox("Daun mengering"):
-    gejala.append("daun mengering")
+    st.subheader("Bercak Pada Daun")
+    if st.checkbox("Tidak ada bercak"):
+        gejala_terpilih.append("tidak ada bercak")
+    if st.checkbox("Bercak coklat"):
+        gejala_terpilih.append("bercak coklat")
+    if st.checkbox("Bercak hitam"):
+        gejala_terpilih.append("bercak hitam")
+    if st.checkbox("Bercak kuning"):
+        gejala_terpilih.append("bercak kuning")
 
-if st.checkbox("Tanaman layu"):
-    gejala.append("tanaman layu")
+    st.subheader("Kondisi Daun")
+    if st.checkbox("Daun normal"):
+        gejala_terpilih.append("daun normal")
+    if st.checkbox("Tanaman layu"):
+        gejala_terpilih.append("tanaman layu")
+    if st.checkbox("Daun keriting"):
+        gejala_terpilih.append("daun keriting")
+    if st.checkbox("Daun menggulung"):
+        gejala_terpilih.append("daun menggulung")
 
-if st.checkbox("Daun menggulung"):
-    gejala.append("daun menggulung")
+    st.subheader("Pertumbuhan")
+    if st.checkbox("Pertumbuhan normal"):
+        gejala_terpilih.append("pertumbuhan normal")
+    if st.checkbox("Pertumbuhan terhambat"):
+        gejala_terpilih.append("pertumbuhan terhambat")
 
-if st.checkbox("Daun berlubang"):
-    gejala.append("daun berlubang")
+    st.subheader("Kerusakan Fisik")
+    if st.checkbox("Daun berlubang"):
+        gejala_terpilih.append("daun berlubang")
+    if st.checkbox("Tepi daun kering"):
+        gejala_terpilih.append("tepi daun kering")
 
-if st.button("PROSES DETEKSI"):
 
-    if len(gejala) == 0:
-        st.error("Silakan pilih gejala terlebih dahulu")
+rules = {
+    "Busuk Lunak Bakteri (Erwinia)": ["daun menghitam", "tanaman layu"],
+    "Bercak Daun Cercospora": ["daun menguning", "bercak coklat"],
+    "Hama Ulat Grayak": ["daun keriting", "pertumbuhan terhambat", "daun berlubang"],
+    "Hama Kutu Daun (Aphids)": ["daun menguning", "daun keriting", "daun menggulung", "pertumbuhan terhambat"],
+    "Kekurangan Air": ["tanaman layu", "daun mengering"],
+    "Kekurangan Nitrogen": ["daun menguning", "pertumbuhan terhambat"],
+    "Serangan Jamur Daun": ["bercak hitam", "daun menguning"],
+    "Busuk Akar": ["tanaman layu", "daun menguning", "pertumbuhan terhambat"]
+}
 
-    elif "daun menghitam" in gejala and "tanaman layu" in gejala:
-        st.success("Penyakit Terdeteksi: Busuk Lunak Bakteri")
+penyakit_data = {
+    "Bercak Daun Cercospora": {
+        "penyebab": "Jamur Cercospora longissima.",
+        "solusi": "- Petik daun yang berbercak coklat.\n- Atur jarak tanam.\n- Semprot fungisida hayati."
+    },
+    "Busuk Akar": {
+        "penyebab": "Akar terserang jamur atau bakteri karena genangan air.",
+        "solusi": "- Perbaiki drainase.\n- Kurangi penyiraman berlebih.\n- Gunakan fungisida."
+    },
+    "Busuk Lunak Bakteri (Erwinia)": {
+        "penyebab": "Bakteri Erwinia carotovora.",
+        "solusi": "- Cabut tanaman yang membusuk.\n- Hindari penyiraman berlebihan.\n- Pastikan drainase baik."
+    },
+    "Hama Kutu Daun (Aphids)": {
+        "penyebab": "Kutu hijau atau hitam kecil.",
+        "solusi": "- Pasang perangkap lem kuning.\n- Semprot tanaman dengan air.\n- Gunakan larutan sabun organik."
+    },
+    "Hama Ulat Grayak": {
+        "penyebab": "Larva atau ulat Spodoptera litura.",
+        "solusi": "- Ambil ulat secara manual.\n- Pasang jaring pelindung.\n- Gunakan insektisida nabati."
+    },
+    "Kekurangan Air": {
+        "penyebab": "Tanaman kekurangan air atau penyiraman tidak teratur.",
+        "solusi": "- Siram tanaman rutin.\n- Jaga kelembapan tanah.\n- Kurangi paparan panas berlebih."
+    },
+    "Kekurangan Nitrogen": {
+        "penyebab": "Tanaman kekurangan unsur nitrogen.",
+        "solusi": "- Berikan pupuk nitrogen.\n- Perbaiki media tanam.\n- Lakukan pemupukan rutin."
+    },
+    "Serangan Jamur Daun": {
+        "penyebab": "Infeksi jamur pada daun akibat kelembapan tinggi.",
+        "solusi": "- Gunakan fungisida.\n- Buang daun yang terinfeksi.\n- Kurangi kelembapan."
+    }
+}
 
-        st.write("### Penyebab")
-        st.write("Bakteri Erwinia carotovora")
+st.write("---")
 
-        st.write("### Solusi")
-        st.write("Kurangi kelembapan dan buang tanaman yang terinfeksi")
-
-    elif "daun berlubang" in gejala:
-        st.success("Penyakit Terdeteksi: Serangan Ulat")
-
-        st.write("### Penyebab")
-        st.write("Hama ulat pemakan daun")
-
-        st.write("### Solusi")
-        st.write("Gunakan insektisida sesuai dosis")
-
+if st.button("🔍 PROSES DETEKSI"):
+    if not gejala_terpilih:
+        st.error("Data belum lengkap! Silakan pilih gejala terlebih dahulu.")
     else:
-        st.warning("Penyakit tidak ditemukan")
+        hasil = []
+
+        for penyakit, daftar_gejala in rules.items():
+            if set(daftar_gejala).issubset(set(gejala_terpilih)):
+                hasil.append(penyakit)
+
+        if not hasil:
+            st.warning("Penyakit tidak ditemukan berdasarkan gejala yang dipilih.")
+        else:
+            st.success("Hasil Deteksi Penyakit Ditemukan")
+
+            for penyakit in hasil:
+                data = penyakit_data[penyakit]
+
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
+                st.subheader(f"🌿 {penyakit}")
+
+                st.write("**Penyebab Penyakit:**")
+                st.write(data["penyebab"])
+
+                st.write("**Solusi Penanganan:**")
+                st.write(data["solusi"])
+
+                st.write("**Tingkat Kecocokan:** 100%")
+                st.markdown("</div>", unsafe_allow_html=True)
+
+st.write("---")
+st.caption("AgriDetect | Sistem Pakar Tanaman Selada | Metode Forward Chaining")
